@@ -1,4 +1,6 @@
-﻿namespace NLayer.Web.Services
+﻿using NLayer.Core.Dtos;
+
+namespace NLayer.Web.Services
 {
     public class ProductApiService
     {
@@ -8,15 +10,44 @@
         {
             _httpClient = httpClient;
         }
-    }
 
-    public class CategoryApiService
-    {
-        private readonly HttpClient _httpClient;
-
-        public CategoryApiService(HttpClient httpClient)
+        public async Task<List<ProductWithCategoryDto>> GetProductsWithCategoryAsync()
         {
-            _httpClient = httpClient;
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<ProductWithCategoryDto>>>("products/GetProductsWithCategory");
+
+            return response.Data;
+        }
+
+        public async Task<ProductDto> GetByIdAsync(int id)
+        {
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<ProductDto>>($"products/{id}");
+
+            return response.Data;
+        }
+
+        public async Task<ProductDto> AddAsync(ProductDto newProduct)
+        {
+            var response = await _httpClient.PostAsJsonAsync("product", newProduct);
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            var responseBody = await response.Content.ReadFromJsonAsync<CustomResponseDto<ProductDto>>();
+
+            return responseBody.Data;
+        }
+
+        public async Task<bool> UpdateAsync(ProductDto product)
+        {
+            var response = await _httpClient.PutAsJsonAsync("product", product);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"product/{id}");
+
+            return response.IsSuccessStatusCode;
         }
     }
 }
