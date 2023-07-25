@@ -27,7 +27,7 @@ namespace NLayer.Web.Services
 
         public async Task<ProductDto> AddAsync(ProductDto newProduct)
         {
-            var response = await _httpClient.PostAsJsonAsync("product", newProduct);
+            var response = await _httpClient.PostAsJsonAsync("products", newProduct);
 
             if (!response.IsSuccessStatusCode) return null;
 
@@ -38,14 +38,14 @@ namespace NLayer.Web.Services
 
         public async Task<bool> UpdateAsync(ProductDto product)
         {
-            var response = await _httpClient.PutAsJsonAsync("product", product);
+            var response = await _httpClient.PutAsJsonAsync("products", product);
 
             return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"product/{id}");
+            var response = await _httpClient.DeleteAsync($"products/{id}");
 
             return response.IsSuccessStatusCode;
         }
